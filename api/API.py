@@ -62,11 +62,11 @@ def get_all_students(
     page: int = Query(1, ge=1),
     size: int = Query(10, le=100)
 ):
-    # Рассчитываем пропуск записей для пагинации
+    
     skip = (page - 1) * size
 
-    # Получаем записи с сортировкой, чтобы они шли в одном и том же порядке
-    print(f"skip={skip}, size={size}")  # Добавьте вывод в консоль для отладки
+    
+    print(f"skip={skip}, size={size}") 
     students = db.query(Student).order_by(Student.surname).offset(skip).limit(size).all()
     print(f"Fetched {len(students)} students") 
 
