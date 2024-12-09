@@ -3,7 +3,7 @@
 # Переменные для настройки базы данных
 DB_NAME="web"
 DB_USER="api_user"
-DB_PASSWORD=$(openssl rand -base64 12)
+DB_PASSWORD='12345'
 DB_FILE="bd/BD.sql"
 
 echo "Генерация пароля для пользователя базы данных: $DB_PASSWORD"
@@ -13,7 +13,8 @@ if ! command -v psql &> /dev/null; then
     
     exit 1
 fi
-
+#DROP DATABASE $DB_NAME;
+#DROP USER $DB_USER;
 echo "Создание базы данных и пользователя..."
 sudo -u postgres psql <<EOF
 CREATE DATABASE $DB_NAME;
@@ -42,6 +43,8 @@ fi
 
 echo "Запуск Nginx..."
 
+CURRENT_DIR=$(pwd)
+sed -i "s|/path/to/web-project|$CURRENT_DIR|g" "nginx/server.conf"
 cp nginx/server.conf /etc/nginx/sites-available/
 ln -s /etc/nginx/sites-available/server.conf /etc/nginx/sites-enabled/
 sudo systemctl restart nginx
@@ -50,9 +53,9 @@ sudo systemctl restart nginx
 
 echo "Запуск API..."
 
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+#python3 -m venv venv
+#source venv/bin/activate
+#pip install -r requirements.txt
 uvicorn api.API:app --host 0.0.0.0 --port 3000
 
 
